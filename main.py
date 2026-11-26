@@ -44,7 +44,12 @@ def choose_best(entries):
     for entry in entries:
         text = entry["line"]
         refuse_bad(text)
-        total = sum(entry["marks"])
+        marks = entry["marks"]
+        if len(marks) != 5:
+            raise ValueError("each line needs five marks, one per brief criterion: " + repr(text))
+        if any(mark < 0 or mark > 10 for mark in marks):
+            raise ValueError("marks must sit between 0 and 10: " + repr(text))
+        total = sum(marks)
         rank = (total, -len(text))
         if best_rank is None or rank > best_rank:
             best_rank = rank
